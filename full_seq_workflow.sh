@@ -57,15 +57,15 @@ $OPENMVG_INSTALL_DIR/bin/openMVG_main_SfMInit_ImageListing -i ./ -o $MATCHES_DIR
 
 # Compute Features
 echo "Computing features within images..."
-$OPENMVG_INSTALL_DIR/bin/openMVG_main_ComputeFeatures -i $MATCHES_DIR/sfm_data.json -o $MATCHES_DIR -m $CFEATURE_TYPE -p $CDESC_TYPE
+$OPENMVG_INSTALL_DIR/bin/openMVG_main_ComputeFeatures -i $MATCHES_DIR/sfm_data.bin -o $MATCHES_DIR -m $CFEATURE_TYPE -p $CDESC_TYPE
 
 # Compute Matches
 echo "Computing matches between features in images..."
-$OPENMVG_INSTALL_DIR/bin/openMVG_main_ComputeMatches -i $MATCHES_DIR/sfm_data.json -o $MATCHES_DIR -n $MMETHOD
+$OPENMVG_INSTALL_DIR/bin/openMVG_main_ComputeMatches -i $MATCHES_DIR/sfm_data.bin -o $MATCHES_DIR -n $MMETHOD
 
 # Reconstruction - seq
 echo "Performing Sequential reconstruction..."
-$OPENMVG_INSTALL_DIR/bin/openMVG_main_IncrementalSfM -i $MATCHES_DIR/sfm_data.json -m $MATCHES_DIR -o $RECONSTRUCT_DIR
+$OPENMVG_INSTALL_DIR/bin/openMVG_main_IncrementalSfM -i $MATCHES_DIR/sfm_data.bin -m $MATCHES_DIR -o $RECONSTRUCT_DIR
 
 if [ $? -gt 0 ]
 then
@@ -75,18 +75,18 @@ fi
 
 # Colorize structure
 echo "Colorizing..."
-$OPENMVG_INSTALL_DIR/bin/openMVG_main_ComputeSfM_DataColor -i $RECONSTRUCT_DIR/sfm_data.json -o $RECONSTRUCT_DIR/colorized.ply
+$OPENMVG_INSTALL_DIR/bin/openMVG_main_ComputeSfM_DataColor -i $RECONSTRUCT_DIR/sfm_data.bin -o $RECONSTRUCT_DIR/colorized.ply
 
 # Structure from known poses
 echo "Structure from known poses..."
-$OPENMVG_INSTALL_DIR/bin/openMVG_main_ComputeStructureFromKnownPoses -i $RECONSTRUCT_DIR/sfm_data.json -m $MATCHES_DIR -f $MATCHES_DIR/matches.f.txt -o $RECONSTRUCT_DIR/robust.json
+$OPENMVG_INSTALL_DIR/bin/openMVG_main_ComputeStructureFromKnownPoses -i $RECONSTRUCT_DIR/sfm_data.bin -m $MATCHES_DIR -f $MATCHES_DIR/matches.f.bin -o $RECONSTRUCT_DIR/robust.json
 
 echo "Colorizing..."
-$OPENMVG_INSTALL_DIR/bin/openMVG_main_ComputeSfM_DataColor -i $RECONSTRUCT_DIR/robust.json -o $RECONSTRUCT_DIR/robust_colorized.ply
+$OPENMVG_INSTALL_DIR/bin/openMVG_main_ComputeSfM_DataColor -i $RECONSTRUCT_DIR/robust.bin -o $RECONSTRUCT_DIR/robust_colorized.ply
 
 
 # Export from OpenMVG to OpenMVS
-$OPENMVS_BUILD_DIR/bin/InterfaceOpenMVG -i ./$RECONSTRUCT_DIR/sfm_data.json -o ./$DEFAULT_OUTPUT_DIR/scene.mvs
+$OPENMVS_BUILD_DIR/bin/InterfaceOpenMVG -i ./$RECONSTRUCT_DIR/sfm_data.bin -o ./$DEFAULT_OUTPUT_DIR/scene.mvs
 
 # Create Dense Point Cloud
 $OPENMVS_BUILD_DIR/bin/DensifyPointCloud ./$DEFAULT_OUTPUT_DIR/scene.mvs
